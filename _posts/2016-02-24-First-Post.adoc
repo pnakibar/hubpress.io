@@ -1,4 +1,6 @@
 = First Post
+== First Level Heading
+=== Second Level Heading
 
 Just testing
 
