@@ -1,4 +1,4 @@
-= Adventures in the Land of Knex.js
+= Adventures in the Land of Knex.js - Part 1
 :hp-tags: javascript, knex, databases
 
 The latest addition to my Javascript toolbet is *Knex.js*. The query builder that powers other libraries, such as link:http://bookshelfjs.org/[bookshelf.js]. As they say it's a _batteries included_ SQL query builder, amazingly fast and even more easy and *fun* to use, it's the definitive tool to learn. If you are not still convinced, it supports the traditional (aka callback-hell) and *promise* interfaces.
@@ -38,8 +38,24 @@ Using the _pg variable_ we can do some nice things:
 
 [source,javascript]
 ----
-pg('table_name').insert({key1: "value1", key2: "value2"}) // <1>
-pg(something)
-something
+pg('table_name').insert({id: 1, colName: 'asd', col2Name: 'asdasd'})
+pg.select('*').from('table_name').then((x) => console.log(x))
 ----
-<1> Inserting data couldn't be simpler!
+Selecting and inserting data couldn't be easier!
+
+With promises your life sure can be easier, no more callback hells! improving on the snipper above, for the selection (the same can also apply to the insertion), we can make the _promise_, oops, select does something (in this case, _console.error_) if any of the operations preceding it goes wrong:
+
+[source,javascript]
+----
+pg.select('*')
+	.from('table_name1')
+    .then((x) => console.log(x))
+    .error(console.error) //like the try/catch but in a monadic way.
+----
+
+
+
+
+
+
+
