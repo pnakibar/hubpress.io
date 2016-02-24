@@ -5,7 +5,7 @@ The latest addition to my Javascript toolbet is *Knex.js*. The query builder tha
 
 Enough with talking, this library supports *Postgres, MySQL, MariaDB, SQLite3, and Oracle*.
 
-_This tutorial is going to cover only the postgres part, but knex can handle the others with the same interface, besides SQLite3, which requires setting the path, but it's extremely simple_
+_This tutorial is going to cover only the postgres part, but knex can handle the others with the same interface, besides SQLite3, which requires setting the path, but it's extremely simple. I'm not going to cover all of the tool, just the basics (querying and inserting data, handling schemas) and the_ *Migrations*
 
 == Getting to work!
 Installing it is simple, inside your npm project just run these commands:
@@ -19,10 +19,10 @@ $ npm install pg --save #because we need the driver!
 
 Once the dependencies are installed, you can just mess around, with the queries:
 
-[source,js]
+[source,javascript]
 ----
-var knex = require('knex')({
-  client: 'mysql',
+var pg = require('knex')({
+  client: 'pg',
   connection: {
     host     : '127.0.0.1',
     user     : 'your_database_user',
@@ -32,3 +32,13 @@ var knex = require('knex')({
 });
 ----
 
+The above snippet is a simple connection to a _postgres_ database. If it evaluates accordingly, you are connected, and you can make queries using the variable _pg_.
+
+Using the _pg variable_ we can do some nice things:
+
+[source,javascript]
+----
+pg('table_name').insert({key1: "value1", key2: "value2}) //<1>
+pg(something)
+----
+<1> Inserting data couldn't be simpler!
