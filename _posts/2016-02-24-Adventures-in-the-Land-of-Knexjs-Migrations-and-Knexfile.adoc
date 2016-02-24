@@ -131,7 +131,7 @@ To understand the file youll need to know three things:
 *knex migrate:latest*
 
 This command will update your database to the last iteration of your migration.
-In other ways it will just execute the up command. 
+In other words it will just execute the up command of the migration files in order of creation, oldest first. 
 
 *knex migrate:rollback*
 
