@@ -1,10 +1,1 @@
-{
-  "meta": {
-    "username": "pnakibar",
-    "repositoryName": "pnakibar.github.io",
-    "branch": "master"
-  },
-  "theme": {
-    "name": "Casper"
-  }
-}
+{"meta":{"username":"pnakibar","repositoryName":"pnakibar.github.io","branch":"master"},"site":{"title":"Pedro's awesome factory of awesomeness","description":"Programming, life, Linux","postsPerPage":"4","url":"https://pnakibar.github.io"},"socialnetwork":{"email":"pedronakibar@gmail.com","linkedin":"pnakibar","github":"pnakibar"},"theme":{"name":"Casper","url":"//pnakibar.github.io/themes/Casper"}}
