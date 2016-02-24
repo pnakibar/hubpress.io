@@ -1,3 +1,9 @@
 = First Post
 
-Just testing :D :joy:
+Just testing
+
+Getthis awesome ascii cinema just for fun :D
+
+++++
+<script type="text/javascript" src="https://asciinema.org/a/34070.js" id="asciicast-34070" async></script>
+++++
