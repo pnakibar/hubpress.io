@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Adventures in the Land of Knex.js - Migrations and Knexfile!</title>
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="//pnakibar.github.io/themes/Casper/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="//pnakibar.github.io/themes/Casper/assets/css/screen.css?v=1.0.0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://pnakibar.github.io/2016/02/24/Adventures-in-the-Land-of-Knexjs-Migrations-and-Knexfile.html" />
+    
+    <meta property="og:site_name" content="Pedro Nakibar" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Adventures in the Land of Knex.js - Migrations and Knexfile!" />
+    <meta property="og:description" content="For this tutorial you will need the sqlite3 connector so just: &#x27;npm install sqlite3 --save&#x27; and you are good to go! Oooohhh the migrations, and how they saved the humanity and continues to everyday save millions of developers around the..." />
+    <meta property="og:url" content="https://pnakibar.github.io/2016/02/24/Adventures-in-the-Land-of-Knexjs-Migrations-and-Knexfile.html" />
+    <meta property="article:published_time" content="2016-02-24T03:00:00.000Z" />
+    <meta property="article:modified_time" content="2016-02-24T23:21:34.344Z" />
+    <meta property="article:tag" content="javascript" />
+    <meta property="article:tag" content="knex" />
+    <meta property="article:tag" content="databases" />
+    <meta property="article:tag" content="migrations" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Adventures in the Land of Knex.js - Migrations and Knexfile!" />
+    <meta name="twitter:description" content="For this tutorial you will need the sqlite3 connector so just: &#x27;npm install sqlite3 --save&#x27; and you are good to go! Oooohhh the migrations, and how they saved the humanity and continues to everyday save millions of developers around the..." />
+    <meta name="twitter:url" content="https://pnakibar.github.io/2016/02/24/Adventures-in-the-Land-of-Knexjs-Migrations-and-Knexfile.html" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Pedro Nakibar",
+    "author": {
+        "@type": "Person",
+        "name": "Pedro Mathias Nakibar",
+        "image": "https://avatars.githubusercontent.com/u/5942199?v=3",
+        "url": "undefined/author/undefined",
+        "sameAs": null
+    },
+    "headline": "Adventures in the Land of Knex.js - Migrations and Knexfile!",
+    "url": "https://pnakibar.github.io/2016/02/24/Adventures-in-the-Land-of-Knexjs-Migrations-and-Knexfile.html",
+    "datePublished": "2016-02-24T03:00:00.000Z",
+    "dateModified": "2016-02-24T23:21:34.344Z",
+    "keywords": "javascript,  knex,  databases,  migrations",
+    "description": "For this tutorial you will need the sqlite3 connector so just: &#x27;npm install sqlite3 --save&#x27; and you are good to go! Oooohhh the migrations, and how they saved the humanity and continues to everyday save millions of developers around the..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost ?" />
+    <link rel="alternate" type="application/rss+xml" title="Pedro Nakibar" href="https://pnakibar.github.io/rss" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+</head>
+<body class="post-template tag-javascript tag-knex tag-databases tag-migrations">
+
+    
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="https://pnakibar.github.io">Home</a>
+        <!-- <a class="subscribe-button icon-feed" href="https://pnakibar.github.io/rss/">Subscribe</a> -->
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post tag-javascript tag-knex tag-databases tag-migrations">
+
+        <header class="post-header">
+            <h1 class="post-title">Adventures in the Land of Knex.js - Migrations and Knexfile!</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2016-02-24">24 February 2016</time>  on <a href="https://pnakibar.github.io/tag/javascript">javascript</a>, <a href="https://pnakibar.github.io/tag/knex"> knex</a>, <a href="https://pnakibar.github.io/tag/databases"> databases</a>, <a href="https://pnakibar.github.io/tag/migrations"> migrations</a>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>For this tutorial you will need the sqlite3 connector so just: 'npm install sqlite3 --save' and you are good to go!</em></p>
+</div>
+<div class="paragraph">
+<p>Oooohhh the migrations, and how they saved the humanity and continues to everyday save millions of developers around the world.</p>
+</div>
+<div class="paragraph">
+<p><strong>Schema Migrations</strong> is a term that reffers to the set of tools that lets the developer simply change the schema of his application easily, without touching the database and SQL things. <strong>Schema Versioning</strong> is also a thing that comes in mind, and it&#8217;s extremely useful: it let&#8217;s you just write downgrades and upgrades to your data base schema. In the sense of changing the possible rows, creating tables and such.</p>
+</div>
+<div class="paragraph">
+<p>Luckily Knex.js has a Migration Tool! Luckily you installed it in the previous tutorial, so lets just call it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ knex
+
+  Usage: knex [options] [command]
+
+
+  Commands:
+
+    init [options]                         Create a fresh knexfile.
+    migrate:make [options] &lt;name&gt;         Create a named migration file.
+    migrate:latest                         Run all migrations that have not yet been run.
+    migrate:rollback                       Rollback the last set of migrations performed.
+    migrate:currentVersion                View the current version for the migration.
+    seed:make [options] &lt;name&gt;            Create a named seed file.
+    seed:run                              Run seed files.
+
+  Options:
+
+    -h, --help         output usage information
+    -V, --version      output the version number
+    --debug            Run with debugging.
+    --knexfile [path]  Specify the knexfile path.
+    --cwd [path]       Specify the working directory.
+    --env [name]       environment, default: process.env.NODE_ENV || development</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hey, you can do tons of things with it!</p>
+</div>
+<div class="paragraph">
+<p>From the beggining of your project <strong>YOU&#8217;LL</strong> want a <strong>knexfile.js</strong>. Why? It simply stores all of your databases and provides an awesome division to let you simply choose which database to use, from <em>development</em>, <em>staging</em> and <em>production</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ knex init
+Created ./knexfile.js</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the contents are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">module.exports = {
+
+  development: {
+    client: 'sqlite3',
+    connection: {
+      filename: './dev.sqlite3'
+    }
+  },
+
+  staging: {
+    client: 'postgresql',
+    connection: {
+      database: 'my_db',
+      user:     'username',
+      password: 'password'
+    },
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      tableName: 'knex_migrations'
+    }
+  },
+
+  production: {
+    client: 'postgresql',
+    connection: {
+      database: 'my_db',
+      user:     'username',
+      password: 'password'
+    },
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      tableName: 'knex_migrations'
+    }
+  }
+
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Go ahead and just define them, look at the <a href="http://knexjs.org/#knexfile">wiki</a> if you are in trouble!</em></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_now_the_migrations">Now, the migrations!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lets create a new <strong>migration</strong>, a new version, a update to the current database:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ knex migrate:make first-one
+  Using environment: development
+  Knex:warning - sqlite does not support inserting default values. Set the `useNullAsDefault` flag to hide this warning. (see docs http://knexjs.org/#Builder-insert).
+  Created Migration: /me/git/tutorials/knex-tutorial/migrations/20160224200600_first-one.js</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And a new file has been created at the migrations folder:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">exports.up = function(knex, Promise) {
+	// You populate this function with upgrades, such as creating tables, messing with the schema, inserting data and such.
+};
+
+exports.down = function(knex, Promise) {
+  // In this function you simply clean the things you have done in the up function.
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To understand the file youll need to know three things:</p>
+</div>
+<div class="paragraph">
+<p><strong>knex migrate:latest</strong></p>
+</div>
+<div class="paragraph">
+<p>This command will update your database to the last iteration of your migration.
+In other ways it will just execute the up command.</p>
+</div>
+<div class="paragraph">
+<p><strong>knex migrate:rollback</strong></p>
+</div>
+<div class="paragraph">
+<p>This command will decrease the migration version, a simple abstraction to the <em>down</em> function.</p>
+</div>
+<div class="paragraph">
+<p><strong>How do they work?</strong></p>
+</div>
+<div class="paragraph">
+<p>When you first the execute the <strong>knex migrate:latest</strong>, Knex will get the actual migrations version and execute the newer files in the migrations folder. Simple as that.</p>
+</div>
+<div class="sect2">
+<h3 id="_workflow">Workflow</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><em>knex init</em></p>
+</li>
+<li>
+<p><em>knex migrate:make &lt;name of the migration file&gt;</em></p>
+</li>
+<li>
+<p>modify the <em>migration/migration-name-1.js</em></p>
+</li>
+<li>
+<p><em>knex migrate:latest</em></p>
+</li>
+<li>
+<p>continue to code</p>
+</li>
+<li>
+<p>"oops this table needs some more columns"</p>
+</li>
+<li>
+<p><em>knex migrate:make &lt;name of the new migration file&gt;</em></p>
+</li>
+<li>
+<p>modify the new migration file again</p>
+</li>
+<li>
+<p><em>knex migrate:latest</em></p>
+</li>
+<li>
+<p>repeat</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>It&#8217;s important to put the <em>down</em> function, because if something goes wrong you can simply <em>knex migrate:rollback</em> and try again.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_getting_real">Getting Real</h3>
+
+</div>
+</div>
+</div>
+        </section>
+
+        <footer class="post-footer">
+
+
+            <figure class="author-image">
+                <a class="img" href="" style="background-image: url(https://avatars.githubusercontent.com/u/5942199?v=3)"><span class="hidden">Pedro Mathias Nakibar's Picture</span></a>
+            </figure>
+
+            <section class="author">
+                <h4><a href="">Pedro Mathias Nakibar</a></h4>
+
+                    <p>Read <a href="">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    <span class="author-location icon-location">Brazil</span>
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/share?text=Adventures%20in%20the%20Land%20of%20Knex.js%20-%20Migrations%20and%20Knexfile!&amp;url=https://pnakibar.github.io/2016/02/24/Adventures-in-the-Land-of-Knexjs-Migrations-and-Knexfile.html"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://pnakibar.github.io/2016/02/24/Adventures-in-the-Land-of-Knexjs-Migrations-and-Knexfile.html"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https://pnakibar.github.io/2016/02/24/Adventures-in-the-Land-of-Knexjs-Migrations-and-Knexfile.html"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+    </article>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="https://pnakibar.github.io">Pedro Nakibar</a> &copy; 2016</section>
+        <section class="poweredby">Proudly published with <a href="http://hubpress.io">HubPress</a></section>
+    </footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
+      <script type="text/javascript">
+        jQuery( document ).ready(function() {
+          // change date with ago
+          jQuery('ago.ago').each(function(){
+            var element = jQuery(this).parent();
+            element.html( moment(element.text()).fromNow());
+          });
+        });
+
+        hljs.initHighlightingOnLoad();      
+      </script>
+
+    <script type="text/javascript" src="//pnakibar.github.io/themes/Casper/assets/js/jquery.fitvids.js?v=1.0.0"></script>
+    <script type="text/javascript" src="//pnakibar.github.io/themes/Casper/assets/js/index.js?v=1.0.0"></script>
+
+</body>
+</html>
