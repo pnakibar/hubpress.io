@@ -38,7 +38,8 @@ Using the _pg variable_ we can do some nice things:
 
 [source,javascript]
 ----
-pg('table_name').insert({key1: "value1", key2: "value2}) // <1>
+pg('table_name').insert({key1: "value1", key2: "value2"}) // <1>
 pg(something)
+something
 ----
 <1> Inserting data couldn't be simpler!
