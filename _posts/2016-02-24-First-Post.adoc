@@ -1,5 +1,7 @@
 = First Post
+:tags: first post, testing
 == First Level Heading
+
 === Second Level Heading
 
 Just testing
